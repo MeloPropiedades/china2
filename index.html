@@ -1501,6 +1501,7 @@ window.CATS = CATS;
 
 function renderProductos(lista) {
   const grid = document.getElementById('productos-grid');
+  if (!grid) return; // La seccion ya no existe en el diseno nuevo
   if (lista.length === 0) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:#7A4F3A;">No hay productos en esta categoría todavía.</div>`;
     return;
@@ -1646,7 +1647,9 @@ document.addEventListener('keydown', e => { if(e.key==='Escape') window.cerrarLi
 
 // Cargar productos desde Firebase
 const grid = document.getElementById('productos-grid');
-grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:#7A4F3A;">Cargando productos...</div>`;
+if (grid) {
+  grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:#7A4F3A;">Cargando productos...</div>`;
+}
 
 const q = query(collection(db, 'productos'));
 onSnapshot(q, (snapshot) => {
@@ -1654,12 +1657,13 @@ onSnapshot(q, (snapshot) => {
     .map(doc => ({id: doc.id, ...doc.data()}))
     .sort((a,b) => (a.orden??999)-(b.orden??999));
   window.todosLosProductos = todosLosProductos;
+  console.log('[Firebase] Productos cargados:', todosLosProductos.length);
   if (typeof window.renderDestacados === 'function') window.renderDestacados();
-  filtrarYRender(categoriaActiva);
+  try { filtrarYRender(categoriaActiva); } catch(e) { console.warn('filtrarYRender error (ok si no existe):', e.message); }
   actualizarCarrito();
 }, (error) => {
   console.error('Firebase error:', error);
-  grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:#c0392b;">Error: ${error.message}</div>`;
+  if (grid) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:4rem;color:#c0392b;">Error: ${error.message}</div>`;
 });
 
 actualizarCarrito();
