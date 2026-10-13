@@ -1528,7 +1528,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, query, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAryOieiqyGQfv1YdFWCB97zhft96s9Gx4",
@@ -1719,28 +1719,35 @@ onSnapshot(q, (snapshot) => {
 actualizarCarrito();
 
 
-// ---- CAROUSEL ----
+// ---- CAROUSEL (re-inicializable) ----
 let currentSlide = 0;
 let carouselInterval = null;
-const slides = document.querySelectorAll('.carousel-slide');
-const dots = document.querySelectorAll('.carousel-dot');
-const totalSlides = slides.length;
+
+function getCarouselSlides() { return document.querySelectorAll('.carousel-slide'); }
+function getCarouselDots() { return document.querySelectorAll('.carousel-dot'); }
 
 function showSlide(idx) {
+  const slides = getCarouselSlides();
+  const dots = getCarouselDots();
+  if (slides.length === 0) return;
   slides.forEach(s => s.classList.remove('active'));
   dots.forEach(d => d.classList.remove('active'));
-  slides[idx].classList.add('active');
+  if (slides[idx]) slides[idx].classList.add('active');
   if (dots[idx]) dots[idx].classList.add('active');
   currentSlide = idx;
 }
 
 window.carouselNext = function() {
-  showSlide((currentSlide + 1) % totalSlides);
+  const n = getCarouselSlides().length;
+  if (n <= 1) return;
+  showSlide((currentSlide + 1) % n);
   resetCarouselInterval();
 };
 
 window.carouselPrev = function() {
-  showSlide((currentSlide - 1 + totalSlides) % totalSlides);
+  const n = getCarouselSlides().length;
+  if (n <= 1) return;
+  showSlide((currentSlide - 1 + n) % n);
   resetCarouselInterval();
 };
 
@@ -1750,8 +1757,11 @@ window.carouselGoTo = function(idx) {
 };
 
 function startCarouselInterval() {
+  if (carouselInterval) clearInterval(carouselInterval);
+  const n = getCarouselSlides().length;
+  if (n <= 1) return;
   carouselInterval = setInterval(() => {
-    showSlide((currentSlide + 1) % totalSlides);
+    showSlide((currentSlide + 1) % getCarouselSlides().length);
   }, 5000);
 }
 
@@ -1760,7 +1770,67 @@ function resetCarouselInterval() {
   startCarouselInterval();
 }
 
-if (totalSlides > 1) startCarouselInterval();
+window.reinitCarousel = function() {
+  currentSlide = 0;
+  showSlide(0);
+  startCarouselInterval();
+};
+
+if (getCarouselSlides().length > 1) startCarouselInterval();
+
+// ============================================
+// LOAD SITE CONFIG (carousel + marquee from Firebase)
+// ============================================
+(async function loadSiteConfig() {
+  try {
+    const snap = await getDoc(doc(db, 'config', 'site'));
+    if (!snap.exists()) {
+      console.log('[Config] No hay config en Firebase, usando defaults');
+      return;
+    }
+    const cfg = snap.data();
+    console.log('[Config] Cargada:', cfg);
+
+    // --- SLIDES ---
+    if (Array.isArray(cfg.slides) && cfg.slides.length > 0) {
+      const track = document.getElementById('carousel-track');
+      const dotsContainer = document.getElementById('carousel-controls');
+      if (track && dotsContainer) {
+        track.innerHTML = cfg.slides.map((s, i) => `
+          <div class="carousel-slide ${i===0?'active':''}" style="background-image: url('${s.imgUrl}');">
+            <div class="carousel-slide-content">
+              ${s.badge ? `<div class="hero-badge">${s.badge}</div>` : ''}
+              <h1>${s.titulo || ''}</h1>
+              ${s.sub ? `<p>${s.sub}</p>` : ''}
+              <div class="hero-btns">
+                <a href="#" onclick="event.preventDefault();window.toggleMegaMenu&&window.toggleMegaMenu();return false;" class="btn-primary">Ver productos</a>
+                <a href="https://wa.me/5492323221697" target="_blank" class="btn-secondary">Consultar</a>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        dotsContainer.innerHTML = cfg.slides.map((_, i) =>
+          `<button class="carousel-dot ${i===0?'active':''}" onclick="carouselGoTo(${i})" aria-label="Slide ${i+1}"></button>`
+        ).join('');
+
+        window.reinitCarousel();
+      }
+    }
+
+    // --- MARQUEE ---
+    if (Array.isArray(cfg.marquee) && cfg.marquee.length > 0) {
+      const track = document.querySelector('.marquee-track');
+      if (track) {
+        // Duplicate messages twice for infinite scroll effect
+        const msgs = [...cfg.marquee, ...cfg.marquee];
+        track.innerHTML = msgs.map(m => `<span class="marquee-item">${m}</span>`).join('');
+      }
+    }
+  } catch(e) {
+    console.warn('[Config] Error (ok si no esta activada la regla):', e.message);
+  }
+})();
 
 
 

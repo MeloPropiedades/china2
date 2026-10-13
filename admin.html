@@ -590,6 +590,185 @@
   }
   body { padding-top: 30px; }
   .admin-nav { top: 30px; }
+
+  /* SITE CONFIG SECTION */
+  .site-config {
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 2px dashed var(--borde);
+  }
+  .config-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--borde);
+  }
+  .config-tab {
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-family: 'DM Sans',sans-serif;
+    font-size: 0.9rem;
+    color: var(--tierra-medio);
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .config-tab:hover { color: var(--tierra-oscuro); }
+  .config-tab.active {
+    color: var(--tierra-oscuro);
+    border-bottom-color: var(--tierra-claro);
+  }
+  .config-panel { display: none; }
+  .config-panel.active { display: block; }
+
+  /* SLIDES ADMIN */
+  .slides-list { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem; }
+  .slide-item {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: 1rem;
+    align-items: center;
+  }
+  .slide-item-img {
+    width: 120px; height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--beige-claro);
+    cursor: pointer;
+  }
+  .slide-item-img-ph {
+    width: 120px; height: 80px;
+    background: var(--beige-claro);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--tierra-medio);
+  }
+  .slide-item-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .slide-item-badge {
+    display: inline-block;
+    font-family: 'Oswald',sans-serif;
+    font-size: 0.65rem;
+    color: var(--tierra-claro);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+  .slide-item-titulo {
+    font-weight: 500;
+    color: var(--tierra-oscuro);
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .slide-item-sub {
+    font-size: 0.82rem;
+    color: var(--tierra-medio);
+    font-weight: 300;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .slide-item-actions {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .slide-mini-btn {
+    width: 32px; height: 32px;
+    background: var(--crema);
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+  }
+  .slide-mini-btn:hover { background: var(--tierra-claro); color: var(--blanco); border-color: var(--tierra-claro); }
+  .slide-mini-btn.del:hover { background: var(--rojo); color: #fff; border-color: var(--rojo); }
+
+  /* MARQUEE ADMIN */
+  .marquee-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+  .marquee-item-admin {
+    background: var(--blanco);
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .marquee-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--tierra-oscuro);
+    outline: none;
+    padding: 4px 0;
+  }
+  .marquee-input:focus { border-bottom: 1px solid var(--tierra-claro); }
+
+  /* SLIDE MODAL */
+  .slide-modal-body { padding: 1.5rem; }
+  .slide-img-upload {
+    border: 2px dashed var(--borde);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    background: var(--crema);
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+  .slide-img-upload:hover { border-color: var(--tierra-claro); }
+  .slide-img-upload input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  }
+  .slide-img-preview { max-width: 100%; max-height: 200px; border-radius: 6px; }
+
+  .btn-save-config {
+    background: var(--verde);
+    color: #fff;
+    border: none;
+    padding: 11px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-save-config:hover { background: #4a5e35; }
+  .btn-save-config:disabled { background: #ccc; cursor: not-allowed; }
+
+  .config-info-box {
+    background: #f0f7ea;
+    border-left: 4px solid var(--verde);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: var(--tierra-medio);
+    margin-bottom: 1.5rem;
+    font-weight: 300;
+  }
+
+  @media (max-width: 700px) {
+    .slide-item { grid-template-columns: 80px 1fr auto; }
+    .slide-item-img, .slide-item-img-ph { width: 80px; height: 60px; }
+  }
+
 </style>
 </head>
 <body>
@@ -678,6 +857,46 @@
         <div id="historial-lista" style="padding:0 1.5rem">
           <div class="empty-state" style="padding:1.5rem 0">No hay ventas registradas todavía.</div>
         </div>
+      </div>
+    </div>
+
+    <!-- SITE CONFIG -->
+    <div class="site-config" id="site-config">
+      <div class="section-header">
+        <div class="section-title">Configuración del inicio</div>
+      </div>
+      <p class="config-info-box">
+        ℹ️ Acá podés editar lo que ven los visitantes al entrar a la tienda. Los cambios se reflejan al instante en el sitio web.
+      </p>
+
+      <div class="config-tabs">
+        <button class="config-tab active" onclick="switchConfigTab('slides', this)">🎞️ Carrusel</button>
+        <button class="config-tab" onclick="switchConfigTab('marquee', this)">📢 Mensajes en movimiento</button>
+      </div>
+
+      <!-- TAB SLIDES -->
+      <div class="config-panel active" id="config-panel-slides">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px;">
+          <p style="color:var(--tierra-medio);font-size:0.9rem;font-weight:300;margin:0;">
+            Agregá, editá o eliminá las imágenes del carrusel principal
+          </p>
+          <button class="btn-agregar" onclick="abrirSlideModal()">+ Agregar slide</button>
+        </div>
+        <div class="slides-list" id="slides-list">
+          <div class="empty-state" style="padding:2rem;">Cargando...</div>
+        </div>
+      </div>
+
+      <!-- TAB MARQUEE -->
+      <div class="config-panel" id="config-panel-marquee">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:10px;">
+          <p style="color:var(--tierra-medio);font-size:0.9rem;font-weight:300;margin:0;">
+            Mensajes que aparecen en movimiento arriba de la pantalla
+          </p>
+          <button class="btn-agregar" onclick="agregarMarqueeMsg()">+ Agregar mensaje</button>
+        </div>
+        <div class="marquee-list" id="marquee-list"></div>
+        <button class="btn-save-config" id="btn-save-marquee" onclick="guardarMarquee()">💾 Guardar mensajes</button>
       </div>
     </div>
 
@@ -823,12 +1042,64 @@
   <button class="bulk-btn close" onclick="limpiarSeleccion()" title="Deseleccionar">×</button>
 </div>
 
+
+<!-- SLIDE MODAL -->
+<div class="modal-overlay" id="slide-modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="slide-modal-titulo">Nuevo slide</h2>
+      <button class="modal-close" onclick="cerrarSlideModal()">×</button>
+    </div>
+    <div class="slide-modal-body">
+      <input type="hidden" id="slide-idx" />
+
+      <div class="form-group">
+        <label>Imagen de fondo *</label>
+        <div class="slide-img-upload" id="slide-img-upload-area">
+          <input type="file" id="slide-img-file" accept="image/*" onchange="onSlideImageSelected(event)" />
+          <div id="slide-img-upload-placeholder">
+            <div style="font-size:2rem;margin-bottom:6px;">📷</div>
+            <div style="font-size:0.85rem;color:var(--tierra-medio);">Click para subir imagen</div>
+            <div style="font-size:0.72rem;color:var(--beige-oscuro);margin-top:4px;">JPG, PNG, WEBP — se comprime automáticamente</div>
+          </div>
+          <div id="slide-img-preview-wrap" style="display:none">
+            <img id="slide-img-preview" class="slide-img-preview" src="" alt="preview" />
+          </div>
+          <div class="upload-progress" id="slide-upload-progress" style="margin-top:10px;">
+            <div class="upload-progress-bar" id="slide-upload-progress-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Badge superior (categoría)</label>
+        <input type="text" id="slide-badge" placeholder="Ej: Novedades, Colección, Promociones..." />
+        <div class="form-hint">Texto chico arriba del título (opcional)</div>
+      </div>
+
+      <div class="form-group">
+        <label>Título principal *</label>
+        <input type="text" id="slide-titulo" placeholder="Ej: Mates únicos para cada ronda" />
+      </div>
+
+      <div class="form-group">
+        <label>Subtítulo / Descripción</label>
+        <textarea id="slide-sub" placeholder="Texto descriptivo que acompaña al título..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancelar" onclick="cerrarSlideModal()">Cancelar</button>
+      <button class="btn-guardar" id="btn-guardar-slide" onclick="guardarSlide()">Guardar slide</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, onSnapshot, query, orderBy, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, query, orderBy, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 const IMGBB_API_KEY = '006d18fa316de0d33294e54a2431d2d6';
 
 const firebaseConfig = {
@@ -1430,6 +1701,267 @@ window.confirmarVenta = async function() {
 };
 
 renderHistorial();
+
+// ============================================
+// SITE CONFIG (Carrusel + Marquee)
+// ============================================
+let siteConfig = { slides: [], marquee: [] };
+let slideImgDataUrl = null;  // Imagen temporal cuando se agrega/edita slide
+
+const CONFIG_DOC_REF = doc(db, 'config', 'site');
+
+async function cargarSiteConfig() {
+  try {
+    const snap = await getDoc(CONFIG_DOC_REF);
+    if (snap.exists()) {
+      const data = snap.data();
+      siteConfig.slides = Array.isArray(data.slides) ? data.slides : [];
+      siteConfig.marquee = Array.isArray(data.marquee) ? data.marquee : [];
+    } else {
+      siteConfig = { slides: [], marquee: [] };
+    }
+    renderSlidesList();
+    renderMarqueeList();
+  } catch(e) {
+    console.error('Error cargando config:', e);
+    showToast('Error cargando configuración', 'error');
+  }
+}
+
+window.switchConfigTab = function(tab, btn) {
+  document.querySelectorAll('.config-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.config-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('config-panel-' + tab).classList.add('active');
+};
+
+// ---- SLIDES ----
+function renderSlidesList() {
+  const el = document.getElementById('slides-list');
+  if (!el) return;
+  if (siteConfig.slides.length === 0) {
+    el.innerHTML = '<div class="empty-state" style="padding:2rem;">No hay slides configurados. Agregá el primero con el botón de arriba.</div>';
+    return;
+  }
+  el.innerHTML = siteConfig.slides.map((s, i) => {
+    const imgHtml = s.imgUrl
+      ? `<img class="slide-item-img" src="${s.imgUrl}" alt="" onclick="window.editarSlide(${i})" />`
+      : `<div class="slide-item-img-ph" onclick="window.editarSlide(${i})">🎞️</div>`;
+    return `<div class="slide-item">
+      ${imgHtml}
+      <div class="slide-item-info">
+        ${s.badge ? `<span class="slide-item-badge">${s.badge}</span>` : ''}
+        <div class="slide-item-titulo">${s.titulo || '(sin título)'}</div>
+        <div class="slide-item-sub">${s.sub || ''}</div>
+      </div>
+      <div class="slide-item-actions">
+        <button class="slide-mini-btn" title="Subir" onclick="window.moverSlide(${i}, -1)" ${i===0?'disabled style=opacity:0.3':''}>▲</button>
+        <button class="slide-mini-btn" title="Editar" onclick="window.editarSlide(${i})">✏️</button>
+        <button class="slide-mini-btn del" title="Eliminar" onclick="window.eliminarSlide(${i})">🗑</button>
+        <button class="slide-mini-btn" title="Bajar" onclick="window.moverSlide(${i}, 1)" ${i===siteConfig.slides.length-1?'disabled style=opacity:0.3':''}>▼</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.abrirSlideModal = function(prod = null) {
+  slideImgDataUrl = null;
+  document.getElementById('slide-modal-titulo').textContent = 'Nuevo slide';
+  document.getElementById('slide-idx').value = '';
+  document.getElementById('slide-titulo').value = '';
+  document.getElementById('slide-sub').value = '';
+  document.getElementById('slide-badge').value = '';
+  document.getElementById('slide-img-file').value = '';
+  document.getElementById('slide-upload-progress').style.display = 'none';
+  document.getElementById('slide-upload-progress-bar').style.width = '0%';
+  document.getElementById('slide-img-upload-placeholder').style.display = 'block';
+  document.getElementById('slide-img-preview-wrap').style.display = 'none';
+  document.getElementById('slide-modal-overlay').classList.add('open');
+};
+
+window.editarSlide = function(idx) {
+  const s = siteConfig.slides[idx];
+  if (!s) return;
+  slideImgDataUrl = s.imgUrl || null;
+  document.getElementById('slide-modal-titulo').textContent = 'Editar slide';
+  document.getElementById('slide-idx').value = idx;
+  document.getElementById('slide-titulo').value = s.titulo || '';
+  document.getElementById('slide-sub').value = s.sub || '';
+  document.getElementById('slide-badge').value = s.badge || '';
+  document.getElementById('slide-img-file').value = '';
+  document.getElementById('slide-upload-progress').style.display = 'none';
+  if (s.imgUrl) {
+    document.getElementById('slide-img-upload-placeholder').style.display = 'none';
+    document.getElementById('slide-img-preview-wrap').style.display = 'block';
+    document.getElementById('slide-img-preview').src = s.imgUrl;
+  } else {
+    document.getElementById('slide-img-upload-placeholder').style.display = 'block';
+    document.getElementById('slide-img-preview-wrap').style.display = 'none';
+  }
+  document.getElementById('slide-modal-overlay').classList.add('open');
+};
+
+window.cerrarSlideModal = function() {
+  document.getElementById('slide-modal-overlay').classList.remove('open');
+  slideImgDataUrl = null;
+};
+
+window.onSlideImageSelected = async function(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('La imagen supera los 5MB', 'error');
+    return;
+  }
+  const btn = document.getElementById('btn-guardar-slide');
+  btn.disabled = true;
+  btn.textContent = 'Subiendo imagen...';
+  try {
+    const url = await subirImagen(file);
+    slideImgDataUrl = url;
+    document.getElementById('slide-img-upload-placeholder').style.display = 'none';
+    document.getElementById('slide-img-preview-wrap').style.display = 'block';
+    document.getElementById('slide-img-preview').src = url;
+    btn.disabled = false;
+    btn.textContent = 'Guardar slide';
+    showToast('Imagen subida ✓');
+  } catch(e) {
+    console.error(e);
+    btn.disabled = false;
+    btn.textContent = 'Guardar slide';
+    showToast('Error subiendo imagen', 'error');
+  }
+};
+
+window.guardarSlide = async function() {
+  const titulo = document.getElementById('slide-titulo').value.trim();
+  const sub = document.getElementById('slide-sub').value.trim();
+  const badge = document.getElementById('slide-badge').value.trim();
+  const idx = document.getElementById('slide-idx').value;
+
+  if (!titulo) { showToast('El título es obligatorio', 'error'); return; }
+  if (!slideImgDataUrl) { showToast('Subí una imagen primero', 'error'); return; }
+
+  const slideData = { titulo, sub: sub || '', badge: badge || '', imgUrl: slideImgDataUrl };
+
+  if (idx === '') {
+    siteConfig.slides.push(slideData);
+  } else {
+    siteConfig.slides[parseInt(idx)] = slideData;
+  }
+
+  const btn = document.getElementById('btn-guardar-slide');
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+  try {
+    await setDoc(CONFIG_DOC_REF, { slides: siteConfig.slides, marquee: siteConfig.marquee, updatedAt: serverTimestamp() }, { merge: true });
+    renderSlidesList();
+    cerrarSlideModal();
+    showToast(idx === '' ? 'Slide agregado ✓' : 'Slide actualizado ✓');
+  } catch(e) {
+    console.error(e);
+    showToast('Error guardando: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Guardar slide';
+  }
+};
+
+window.eliminarSlide = async function(idx) {
+  if (!confirm(`¿Eliminar este slide del carrusel?`)) return;
+  siteConfig.slides.splice(idx, 1);
+  try {
+    await setDoc(CONFIG_DOC_REF, { slides: siteConfig.slides, marquee: siteConfig.marquee, updatedAt: serverTimestamp() }, { merge: true });
+    renderSlidesList();
+    showToast('Slide eliminado');
+  } catch(e) {
+    showToast('Error eliminando', 'error');
+  }
+};
+
+window.moverSlide = async function(idx, delta) {
+  const newIdx = idx + delta;
+  if (newIdx < 0 || newIdx >= siteConfig.slides.length) return;
+  const [moved] = siteConfig.slides.splice(idx, 1);
+  siteConfig.slides.splice(newIdx, 0, moved);
+  renderSlidesList();
+  try {
+    await setDoc(CONFIG_DOC_REF, { slides: siteConfig.slides, marquee: siteConfig.marquee, updatedAt: serverTimestamp() }, { merge: true });
+  } catch(e) {
+    showToast('Error reordenando', 'error');
+  }
+};
+
+// ---- MARQUEE ----
+function renderMarqueeList() {
+  const el = document.getElementById('marquee-list');
+  if (!el) return;
+  if (siteConfig.marquee.length === 0) {
+    el.innerHTML = '<div class="empty-state" style="padding:2rem;">No hay mensajes. Agregá el primero.</div>';
+    return;
+  }
+  el.innerHTML = siteConfig.marquee.map((msg, i) => `
+    <div class="marquee-item-admin">
+      <span style="color:var(--verde);font-weight:500;">●</span>
+      <input class="marquee-input" type="text" value="${msg.replace(/"/g,'&quot;')}" data-idx="${i}" oninput="actualizarMarqueeMsg(${i}, this.value)" />
+      <button class="slide-mini-btn" title="Subir" onclick="window.moverMarquee(${i}, -1)" ${i===0?'disabled style=opacity:0.3':''}>▲</button>
+      <button class="slide-mini-btn" title="Bajar" onclick="window.moverMarquee(${i}, 1)" ${i===siteConfig.marquee.length-1?'disabled style=opacity:0.3':''}>▼</button>
+      <button class="slide-mini-btn del" title="Eliminar" onclick="window.eliminarMarqueeMsg(${i})">🗑</button>
+    </div>
+  `).join('');
+}
+
+window.agregarMarqueeMsg = function() {
+  siteConfig.marquee.push('Nuevo mensaje');
+  renderMarqueeList();
+};
+
+window.actualizarMarqueeMsg = function(idx, val) {
+  siteConfig.marquee[idx] = val;
+};
+
+window.eliminarMarqueeMsg = function(idx) {
+  siteConfig.marquee.splice(idx, 1);
+  renderMarqueeList();
+};
+
+window.moverMarquee = function(idx, delta) {
+  const newIdx = idx + delta;
+  if (newIdx < 0 || newIdx >= siteConfig.marquee.length) return;
+  const [moved] = siteConfig.marquee.splice(idx, 1);
+  siteConfig.marquee.splice(newIdx, 0, moved);
+  renderMarqueeList();
+};
+
+window.guardarMarquee = async function() {
+  const btn = document.getElementById('btn-save-marquee');
+  btn.disabled = true;
+  btn.textContent = 'Guardando...';
+  // Filter empty messages
+  siteConfig.marquee = siteConfig.marquee.filter(m => m && m.trim());
+  try {
+    await setDoc(CONFIG_DOC_REF, { slides: siteConfig.slides, marquee: siteConfig.marquee, updatedAt: serverTimestamp() }, { merge: true });
+    renderMarqueeList();
+    showToast('Mensajes guardados ✓');
+  } catch(e) {
+    console.error(e);
+    showToast('Error: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Guardar mensajes';
+  }
+};
+
+// Load config when admin opens
+onAuthStateChanged(auth, (user) => {
+  if (user) cargarSiteConfig();
+});
+
+// Close slide modal on outside click
+document.getElementById('slide-modal-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'slide-modal-overlay') cerrarSlideModal();
+});
+
 </script>
 </body>
 </html>
