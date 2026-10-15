@@ -1180,6 +1180,37 @@
     z-index: 500;
     box-shadow: 0 4px 12px rgba(255,107,53,0.4);
   }
+
+  /* ZOOM HINT ON PRODUCT DETAIL */
+  .pd-zoom-hint {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(77,73,68,0.85);
+    color: var(--hueso);
+    padding: 8px 14px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: all 0.25s;
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+    z-index: 3;
+  }
+  .pd-image-wrap:hover .pd-zoom-hint {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .pd-zoom-hint span { font-size: 0.9rem; }
+  /* Also make the pd-image not block click events on wrap */
+  .pd-image { pointer-events: none; }
+
 </style>
 </head>
 <body>
@@ -1560,7 +1591,7 @@ function renderProductos(lista) {
     <div class="producto-card" onclick="if(!event.target.closest('button'))window.abrirProducto('${p.id}')">
       <div style="position:relative">
         ${p.imgUrl
-          ? `<img src="${p.imgUrl}" alt="${p.nombre}" loading="lazy" decoding="async" style="width:100%;height:220px;object-fit:cover;object-position:${p.imgPosX??50}% ${p.imgPosY??50}%;display:block;cursor:pointer;background:#f0e9de;" onerror="this.style.display=\'none\';if(this.nextElementSibling)this.nextElementSibling.style.display=\'flex\'"/><div class="producto-img-placeholder" style="display:none"><span style="font-size:3.5rem">${p.emoji||'🧉'}</span><span>${p.nombre}</span></div>`
+          ? `<img src="${p.imgUrl}" alt="${p.nombre}" loading="lazy" decoding="async" style="width:100%;height:220px;object-fit:cover;object-position:${p.imgPosX??50}% ${p.imgPosY??50}%;transform:scale(${(p.imgZoom??100)/100});transform-origin:${p.imgPosX??50}% ${p.imgPosY??50}%;display:block;cursor:pointer;background:#f0e9de;" onerror="this.style.display=\'none\';if(this.nextElementSibling)this.nextElementSibling.style.display=\'flex\'"/><div class="producto-img-placeholder" style="display:none"><span style="font-size:3.5rem">${p.emoji||'🧉'}</span><span>${p.nombre}</span></div>`
           : `<div class="producto-img-placeholder"><span style="font-size:3.5rem">${p.emoji||'🧉'}</span><span>${p.nombre}</span></div>`
         }
         ${p.badge ? `<div class="prod-badge ${['Nuevo','Importada','Orgánica'].includes(p.badge)?'oferta':''}">${p.badge}</div>` : ''}
@@ -1899,7 +1930,7 @@ window.abrirVista = function(cat, titulo) {
     grid.innerHTML = lista.map(p => {
       const nombreEsc = (p.nombre || '').replace(/'/g, "\\'");
       const imgHtml = p.imgUrl
-        ? `<img src="${p.imgUrl}" alt="${p.nombre}" loading="lazy" decoding="async" style="width:100%;height:220px;object-fit:cover;object-position:${p.imgPosX??50}% ${p.imgPosY??50}%;display:block;cursor:pointer;background:#f0e9de;" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex'"/><div class="producto-img-placeholder" style="display:none"><span style="font-size:3.5rem">${p.emoji||'🧉'}</span><span>${p.nombre}</span></div>`
+        ? `<img src="${p.imgUrl}" alt="${p.nombre}" loading="lazy" decoding="async" style="width:100%;height:220px;object-fit:cover;object-position:${p.imgPosX??50}% ${p.imgPosY??50}%;transform:scale(${(p.imgZoom??100)/100});transform-origin:${p.imgPosX??50}% ${p.imgPosY??50}%;display:block;cursor:pointer;background:#f0e9de;" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex'"/><div class="producto-img-placeholder" style="display:none"><span style="font-size:3.5rem">${p.emoji||'🧉'}</span><span>${p.nombre}</span></div>`
         : `<div class="producto-img-placeholder"><span style="font-size:3.5rem">${p.emoji||'🧉'}</span><span>${p.nombre}</span></div>`;
       return `<div class="producto-card" onclick="if(!event.target.closest('button'))window.abrirProducto('${p.id}')">
         <div style="position:relative">
@@ -1958,7 +1989,7 @@ function renderDestacado(gridId, tag, textoVacio) {
   grid.innerHTML = lista.map(p => {
     const nombreEsc = (p.nombre || '').replace(/'/g, "\\'");
     const imgHtml = p.imgUrl
-      ? `<img src="${p.imgUrl}" alt="${p.nombre}" loading="lazy" decoding="async" style="width:100%;height:220px;object-fit:cover;object-position:${p.imgPosX??50}% ${p.imgPosY??50}%;display:block;cursor:pointer;background:#f0e9de;" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex'"/><div class="producto-img-placeholder" style="display:none"><span style="font-size:3.5rem">${p.emoji||'🧉'}</span><span>${p.nombre}</span></div>`
+      ? `<img src="${p.imgUrl}" alt="${p.nombre}" loading="lazy" decoding="async" style="width:100%;height:220px;object-fit:cover;object-position:${p.imgPosX??50}% ${p.imgPosY??50}%;transform:scale(${(p.imgZoom??100)/100});transform-origin:${p.imgPosX??50}% ${p.imgPosY??50}%;display:block;cursor:pointer;background:#f0e9de;" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex'"/><div class="producto-img-placeholder" style="display:none"><span style="font-size:3.5rem">${p.emoji||'🧉'}</span><span>${p.nombre}</span></div>`
       : `<div class="producto-img-placeholder"><span style="font-size:3.5rem">${p.emoji||'🧉'}</span><span>${p.nombre}</span></div>`;
     return `<div class="producto-card" onclick="if(!event.target.closest('button'))window.abrirProducto('${p.id}')">
       <div style="position:relative">
@@ -2038,7 +2069,7 @@ function renderProductoDetalle() {
   if (p.stock === 0) badgeHtml = `<div class="pd-badge-img" style="background:#c0392b;">Sin stock</div>`;
 
   const imgHtml = p.imgUrl
-    ? `<img src="${p.imgUrl}" alt="${p.nombre}" class="pd-image" style="object-position:${p.imgPosX??50}% ${p.imgPosY??50}%"/>`
+    ? `<img src="${p.imgUrl}" alt="${p.nombre}" class="pd-image" style="object-position:${p.imgPosX??50}% ${p.imgPosY??50}%;transform:scale(${(p.imgZoom??100)/100});transform-origin:${p.imgPosX??50}% ${p.imgPosY??50}%"/>`
     : `<div class="pd-image-placeholder"><span>${p.emoji||'🧉'}</span><span>${p.nombre}</span></div>`;
 
   let stockHtml = '';
@@ -2064,9 +2095,10 @@ function renderProductoDetalle() {
   }
 
   body.innerHTML = `
-    <div class="pd-image-wrap">
+    <div class="pd-image-wrap" onclick="if(p.imgUrl)window.abrirLightbox('${p.imgUrl}','${(p.nombre||'').replace(/'/g,"\\'")}')">
       ${imgHtml}
       ${badgeHtml}
+      ${p.imgUrl ? '<div class="pd-zoom-hint"><span>🔍</span> Click para ampliar</div>' : ''}
     </div>
     <div class="pd-info">
       <div class="pd-breadcrumb">${CATS[p.cat]||p.cat}</div>

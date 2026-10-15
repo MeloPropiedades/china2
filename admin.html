@@ -825,6 +825,8 @@
     object-position: center center;
     display: block;
     pointer-events: none;
+    transform-origin: center center;
+    transition: transform 0.1s;
   }
   .reencuadre-preview-label {
     position: absolute;
@@ -1067,6 +1069,10 @@
               <div class="reencuadre-slider-group">
                 <label>↕ Vertical <span id="reencuadre-y-val">50%</span></label>
                 <input type="range" id="reencuadre-y" min="0" max="100" value="50" oninput="updateReencuadre()" />
+              </div>
+              <div class="reencuadre-slider-group">
+                <label>🔍 Zoom <span id="reencuadre-zoom-val">100%</span></label>
+                <input type="range" id="reencuadre-zoom" min="100" max="250" value="100" oninput="updateReencuadre()" />
               </div>
               <button type="button" class="reencuadre-btn-reset" onclick="resetReencuadre()">↺ Centrar</button>
             </div>
@@ -1569,7 +1575,7 @@ window.onImageSelected = function(event) {
     document.getElementById('upload-preview-wrap').style.display = 'block';
     document.getElementById('upload-preview-img').src = e.target.result;
     document.getElementById('upload-filename').textContent = file.name;
-    mostrarReencuadre(e.target.result, 50, 50);
+    mostrarReencuadre(e.target.result, 50, 50, 100);
   };
   reader.readAsDataURL(file);
 };
@@ -1585,26 +1591,32 @@ window.quitarImagen = function(e) {
 };
 
 // ---- REENCUADRE ----
-function mostrarReencuadre(src, x, y) {
+function mostrarReencuadre(src, x, y, zoom) {
   document.getElementById('reencuadre-section').classList.add('visible');
   document.getElementById('reencuadre-img').src = src;
   document.getElementById('reencuadre-x').value = x;
   document.getElementById('reencuadre-y').value = y;
+  document.getElementById('reencuadre-zoom').value = zoom ?? 100;
   updateReencuadre();
 }
 
 window.updateReencuadre = function() {
   const x = document.getElementById('reencuadre-x').value;
   const y = document.getElementById('reencuadre-y').value;
+  const zoom = document.getElementById('reencuadre-zoom').value;
   document.getElementById('reencuadre-x-val').textContent = x + '%';
   document.getElementById('reencuadre-y-val').textContent = y + '%';
+  document.getElementById('reencuadre-zoom-val').textContent = zoom + '%';
   const img = document.getElementById('reencuadre-img');
   img.style.objectPosition = x + '% ' + y + '%';
+  img.style.transform = 'scale(' + (zoom/100) + ')';
+  img.style.transformOrigin = x + '% ' + y + '%';
 };
 
 window.resetReencuadre = function() {
   document.getElementById('reencuadre-x').value = 50;
   document.getElementById('reencuadre-y').value = 50;
+  document.getElementById('reencuadre-zoom').value = 100;
   updateReencuadre();
 };
 
@@ -1797,7 +1809,7 @@ window.abrirModal = function(prod = null) {
     document.getElementById('upload-preview-img').src = prod.imgUrl;
     document.getElementById('upload-filename').textContent = 'Imagen actual';
     // Mostrar reencuadre con la posicion guardada
-    mostrarReencuadre(prod.imgUrl, prod.imgPosX ?? 50, prod.imgPosY ?? 50);
+    mostrarReencuadre(prod.imgUrl, prod.imgPosX ?? 50, prod.imgPosY ?? 50, prod.imgZoom ?? 100);
   } else {
     document.getElementById('upload-placeholder').style.display = 'block';
     document.getElementById('upload-preview-wrap').style.display = 'none';
@@ -1851,6 +1863,7 @@ window.guardarProducto = async function() {
       colores: coloresActuales.length > 0 ? JSON.parse(JSON.stringify(coloresActuales)) : null,
       imgPosX: Number(document.getElementById('reencuadre-x').value) || 50,
       imgPosY: Number(document.getElementById('reencuadre-y').value) || 50,
+      imgZoom: Number(document.getElementById('reencuadre-zoom').value) || 100,
       imgUrl: imgUrl || null,
       updatedAt: serverTimestamp()
     };
