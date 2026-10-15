@@ -769,6 +769,118 @@
     .slide-item-img, .slide-item-img-ph { width: 80px; height: 60px; }
   }
 
+
+  /* REENCUADRE */
+  .reencuadre-section {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--crema);
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    display: none;
+  }
+  .reencuadre-section.visible { display: block; }
+  .reencuadre-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tierra-medio);
+    font-weight: 500;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .reencuadre-help {
+    font-size: 0.78rem;
+    color: var(--tierra-medio);
+    font-weight: 300;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .reencuadre-preview-wrap {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .reencuadre-preview {
+    width: 220px;
+    height: 220px;
+    background: #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid var(--tierra-oscuro);
+    position: relative;
+    flex-shrink: 0;
+    cursor: move;
+    user-select: none;
+  }
+  .reencuadre-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    pointer-events: none;
+  }
+  .reencuadre-preview-label {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: rgba(61,43,31,0.75);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.68rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    pointer-events: none;
+  }
+  .reencuadre-controls {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .reencuadre-slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .reencuadre-slider-group label {
+    font-size: 0.78rem;
+    color: var(--tierra-medio);
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+  }
+  .reencuadre-slider-group label span {
+    color: var(--tierra-oscuro);
+    font-weight: 500;
+  }
+  .reencuadre-slider-group input[type=range] {
+    width: 100%;
+    cursor: pointer;
+    accent-color: var(--tierra-oscuro);
+  }
+  .reencuadre-btn-reset {
+    padding: 8px 14px;
+    background: var(--beige-claro);
+    color: var(--tierra-oscuro);
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    transition: all 0.15s;
+    align-self: flex-start;
+  }
+  .reencuadre-btn-reset:hover { background: var(--tierra-claro); color: #fff; border-color: var(--tierra-claro); }
+
 </style>
 </head>
 <body>
@@ -931,6 +1043,33 @@
           </div>
           <div class="upload-progress" id="upload-progress">
             <div class="upload-progress-bar" id="upload-progress-bar"></div>
+          </div>
+        </div>
+
+        <!-- REENCUADRE / POSICIONAMIENTO -->
+        <div class="reencuadre-section" id="reencuadre-section">
+          <div class="reencuadre-title">
+            <span>🎯</span> Reencuadrar foto
+          </div>
+          <p class="reencuadre-help">
+            Así se verá en la tienda. Arrastrá la imagen o usá los controles para ajustar qué parte se muestra.
+          </p>
+          <div class="reencuadre-preview-wrap">
+            <div class="reencuadre-preview" id="reencuadre-preview" title="Arrastrá para mover">
+              <img id="reencuadre-img" src="" alt="preview reencuadre" />
+              <span class="reencuadre-preview-label">Vista previa</span>
+            </div>
+            <div class="reencuadre-controls">
+              <div class="reencuadre-slider-group">
+                <label>↔ Horizontal <span id="reencuadre-x-val">50%</span></label>
+                <input type="range" id="reencuadre-x" min="0" max="100" value="50" oninput="updateReencuadre()" />
+              </div>
+              <div class="reencuadre-slider-group">
+                <label>↕ Vertical <span id="reencuadre-y-val">50%</span></label>
+                <input type="range" id="reencuadre-y" min="0" max="100" value="50" oninput="updateReencuadre()" />
+              </div>
+              <button type="button" class="reencuadre-btn-reset" onclick="resetReencuadre()">↺ Centrar</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1430,6 +1569,7 @@ window.onImageSelected = function(event) {
     document.getElementById('upload-preview-wrap').style.display = 'block';
     document.getElementById('upload-preview-img').src = e.target.result;
     document.getElementById('upload-filename').textContent = file.name;
+    mostrarReencuadre(e.target.result, 50, 50);
   };
   reader.readAsDataURL(file);
 };
@@ -1441,7 +1581,78 @@ window.quitarImagen = function(e) {
   document.getElementById('upload-placeholder').style.display = 'block';
   document.getElementById('upload-preview-wrap').style.display = 'none';
   document.getElementById('prod-img-file').value = '';
+  document.getElementById('reencuadre-section').classList.remove('visible');
 };
+
+// ---- REENCUADRE ----
+function mostrarReencuadre(src, x, y) {
+  document.getElementById('reencuadre-section').classList.add('visible');
+  document.getElementById('reencuadre-img').src = src;
+  document.getElementById('reencuadre-x').value = x;
+  document.getElementById('reencuadre-y').value = y;
+  updateReencuadre();
+}
+
+window.updateReencuadre = function() {
+  const x = document.getElementById('reencuadre-x').value;
+  const y = document.getElementById('reencuadre-y').value;
+  document.getElementById('reencuadre-x-val').textContent = x + '%';
+  document.getElementById('reencuadre-y-val').textContent = y + '%';
+  const img = document.getElementById('reencuadre-img');
+  img.style.objectPosition = x + '% ' + y + '%';
+};
+
+window.resetReencuadre = function() {
+  document.getElementById('reencuadre-x').value = 50;
+  document.getElementById('reencuadre-y').value = 50;
+  updateReencuadre();
+};
+
+// Drag directo sobre el preview
+(function() {
+  let isDragging = false;
+  let startX = 0, startY = 0;
+  let startPosX = 50, startPosY = 50;
+  function initDrag() {
+    const previewEl = document.getElementById('reencuadre-preview');
+    if (!previewEl || previewEl._dragInit) return;
+    previewEl._dragInit = true;
+    function onDown(e) {
+      isDragging = true;
+      const touch = e.touches ? e.touches[0] : e;
+      startX = touch.clientX;
+      startY = touch.clientY;
+      startPosX = Number(document.getElementById('reencuadre-x').value);
+      startPosY = Number(document.getElementById('reencuadre-y').value);
+      e.preventDefault();
+    }
+    function onMove(e) {
+      if (!isDragging) return;
+      const touch = e.touches ? e.touches[0] : e;
+      const dx = touch.clientX - startX;
+      const dy = touch.clientY - startY;
+      const rect = previewEl.getBoundingClientRect();
+      const newX = Math.max(0, Math.min(100, startPosX - (dx / rect.width) * 100));
+      const newY = Math.max(0, Math.min(100, startPosY - (dy / rect.height) * 100));
+      document.getElementById('reencuadre-x').value = newX;
+      document.getElementById('reencuadre-y').value = newY;
+      updateReencuadre();
+      e.preventDefault();
+    }
+    function onUp() { isDragging = false; }
+    previewEl.addEventListener('mousedown', onDown);
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    previewEl.addEventListener('touchstart', onDown, { passive: false });
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onUp);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDrag);
+  } else {
+    initDrag();
+  }
+})();
 
 // Comprime y redimensiona la imagen antes de subir
 async function comprimirImagen(file, maxWidth = 1200, quality = 0.82) {
@@ -1585,9 +1796,12 @@ window.abrirModal = function(prod = null) {
     document.getElementById('upload-preview-wrap').style.display = 'block';
     document.getElementById('upload-preview-img').src = prod.imgUrl;
     document.getElementById('upload-filename').textContent = 'Imagen actual';
+    // Mostrar reencuadre con la posicion guardada
+    mostrarReencuadre(prod.imgUrl, prod.imgPosX ?? 50, prod.imgPosY ?? 50);
   } else {
     document.getElementById('upload-placeholder').style.display = 'block';
     document.getElementById('upload-preview-wrap').style.display = 'none';
+    document.getElementById('reencuadre-section').classList.remove('visible');
   }
   document.getElementById('modal-overlay').classList.add('open');
   setTimeout(() => document.getElementById('prod-nombre').focus(), 100);
@@ -1635,6 +1849,8 @@ window.guardarProducto = async function() {
       stock: document.getElementById('prod-stock').value !== '' ? Number(document.getElementById('prod-stock').value) : null,
       destacado: document.getElementById('prod-destacado').value || null,
       colores: coloresActuales.length > 0 ? JSON.parse(JSON.stringify(coloresActuales)) : null,
+      imgPosX: Number(document.getElementById('reencuadre-x').value) || 50,
+      imgPosY: Number(document.getElementById('reencuadre-y').value) || 50,
       imgUrl: imgUrl || null,
       updatedAt: serverTimestamp()
     };
