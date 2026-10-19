@@ -454,6 +454,32 @@
   .prod-card-mini-btn:hover { background: var(--tierra-claro); color: var(--blanco); border-color: var(--tierra-claro); }
   .prod-card-mini-btn.del:hover { background: var(--rojo); color: #fff; border-color: var(--rojo); }
 
+  /* BOTÓN −1 VENDIDO (card principal) */
+  .prod-card-sell-btn {
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--tierra-oscuro);
+    color: var(--blanco);
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .prod-card-sell-btn:hover:not(:disabled) {
+    background: #27ae60;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(39,174,96,0.3);
+  }
+  .prod-card-sell-btn:active:not(:disabled) { transform: translateY(0); }
+
   /* BARRA DE SELECCION FLOTANTE */
   .bulk-bar {
     position: fixed;
@@ -909,11 +935,10 @@
   </nav>
   <div class="admin-body">
     <div class="stats-grid">
-      <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Productos totales</div></div>
-      <div class="stat-card"><div class="stat-num" id="stat-mates">—</div><div class="stat-label">Mates</div></div>
-      <div class="stat-card"><div class="stat-num" id="stat-materas">—</div><div class="stat-label">Materas</div></div>
-      <div class="stat-card"><div class="stat-num" id="stat-otros">—</div><div class="stat-label">Otros</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Productos</div></div>
       <div class="stat-card"><div class="stat-num" id="stat-agotados" style="color:#e74c3c">—</div><div class="stat-label">Sin stock</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-bajo" style="color:#e67e22">—</div><div class="stat-label">Stock bajo (≤3)</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-valor" style="color:#27ae60;font-size:1.4rem">—</div><div class="stat-label">Valor inventario</div></div>
     </div>
     <div class="section-header">
       <div class="section-title">Productos</div>
@@ -1423,10 +1448,12 @@ function renderProductCard(p) {
   if (p.destacado === 'elegido') destBadge = `<span class="prod-card-badge destacado">⭐ Elegido</span>`;
   if (p.destacado === 'favorito') destBadge = `<span class="prod-card-badge destacado">💛 Favorito</span>`;
 
+  const stockDisabled = (p.stock == null || p.stock <= 0) ? 'disabled style="opacity:0.35;cursor:not-allowed"' : '';
   return `<div class="prod-card ${isSelected ? 'selected' : ''}" data-id="${p.id}" onclick="window.cardClick(event,'${p.id}')">
     <div class="prod-card-check" onclick="event.stopPropagation(); window.toggleSeleccion('${p.id}')"></div>
     <div class="prod-card-actions">
       <button class="prod-card-mini-btn" onclick="event.stopPropagation(); window.editarProducto('${p.id}')" title="Editar">✏️</button>
+      <button class="prod-card-mini-btn" onclick="event.stopPropagation(); window.duplicarProducto('${p.id}')" title="Duplicar">📋</button>
       <button class="prod-card-mini-btn del" onclick="event.stopPropagation(); window.eliminarProducto('${p.id}','${nombreEsc}')" title="Eliminar">🗑</button>
     </div>
     ${imgHtml}
@@ -1437,6 +1464,9 @@ function renderProductCard(p) {
         ${stockBadge}
         ${destBadge}
       </div>
+      <button class="prod-card-sell-btn" ${stockDisabled} onclick="event.stopPropagation(); window.restarStock('${p.id}')" title="Vendí 1 unidad">
+        <span>−1 vendido</span>
+      </button>
     </div>
   </div>`;
 }
@@ -1549,11 +1579,17 @@ window.bulkCambiarDestacado = async function() {
 
 
 function actualizarStats(lista) {
-  document.getElementById('stat-total').textContent = lista.length;
-  document.getElementById('stat-mates').textContent = lista.filter(p=>p.cat==='mate').length;
-  document.getElementById('stat-materas').textContent = lista.filter(p=>p.cat==='matera').length;
-  document.getElementById('stat-otros').textContent = lista.filter(p=>!['mate','matera'].includes(p.cat)).length;
-  document.getElementById('stat-agotados').textContent = lista.filter(p=>p.stock===0).length;
+  const total = lista.length;
+  const agotados = lista.filter(p => p.stock === 0).length;
+  const bajo = lista.filter(p => p.stock != null && p.stock > 0 && p.stock <= 3).length;
+  const valorInv = lista.reduce((acc, p) => {
+    const stk = (p.stock != null && p.stock > 0) ? p.stock : 0;
+    return acc + (stk * (Number(p.precio) || 0));
+  }, 0);
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-agotados').textContent = agotados;
+  document.getElementById('stat-bajo').textContent = bajo;
+  document.getElementById('stat-valor').textContent = '$' + Math.round(valorInv).toLocaleString('es-AR');
   // Update ventas select
   const sel = document.getElementById('venta-producto');
   if (sel) {
@@ -1827,6 +1863,34 @@ window.cerrarModal = function() {
 window.editarProducto = function(id) {
   const prod = productosCache.find(p => p.id === id);
   if (prod) window.abrirModal(prod);
+};
+
+window.restarStock = async function(id) {
+  const prod = productosCache.find(p => p.id === id);
+  if (!prod) return;
+  const actual = prod.stock;
+  if (actual == null || actual <= 0) { showToast('Sin stock', 'error'); return; }
+  const nuevo = actual - 1;
+  try {
+    await updateDoc(doc(db, 'productos', id), { stock: nuevo, updatedAt: serverTimestamp() });
+    const msg = nuevo === 0 ? `✓ "${prod.nombre}" quedó SIN stock` : `✓ Venta registrada — quedan ${nuevo}`;
+    showToast(msg, nuevo === 0 ? 'error' : 'success');
+  } catch(e) {
+    showToast('Error al descontar stock', 'error');
+  }
+};
+
+window.duplicarProducto = function(id) {
+  const prod = productosCache.find(p => p.id === id);
+  if (!prod) return;
+  // Clonar sin id para forzar nuevo documento
+  const copia = JSON.parse(JSON.stringify(prod));
+  delete copia.id;
+  delete copia.createdAt;
+  delete copia.updatedAt;
+  copia.nombre = (prod.nombre || '') + ' (copia)';
+  window.abrirModal(copia);
+  showToast('Editá los datos y guardá para crear la copia', 'success');
 };
 
 window.eliminarProducto = async function(id, nombre) {
